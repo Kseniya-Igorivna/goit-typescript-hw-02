@@ -3,7 +3,19 @@ import styles from "./ImageModal.module.css";
 
 ReactModal.setAppElement("#root");
 
-export default function ImageModal({ isOpen, onRequestClose, src, alt }) {
+interface ImageModalProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  src: string;
+  alt: string;
+}
+
+export default function ImageModal({
+  isOpen,
+  onRequestClose,
+  src,
+  alt,
+}: ImageModalProps) {
   return (
     <ReactModal
       isOpen={isOpen}
