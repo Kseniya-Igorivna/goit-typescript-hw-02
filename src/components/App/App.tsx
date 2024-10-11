@@ -30,6 +30,42 @@ interface State {
   selectedImage: { src: string; alt: string } | null;
 }
 
+interface FetchRequestAction {
+  type: "FETCH_REQUEST";
+}
+
+interface FetchSuccessAction {
+  type: "FETCH_SUCCESS";
+  payload: Image[];
+}
+
+interface FetchErrorAction {
+  type: "FETCH_ERROR";
+  payload: string;
+}
+
+interface SetQueryAction {
+  type: "SET_QUERY";
+  payload: string;
+}
+
+interface SetPageAction {
+  type: "SET_PAGE";
+}
+
+interface SetSelectedImageAction {
+  type: "SET_SELECTED_IMAGE";
+  payload: { src: string; alt: string } | null;
+}
+
+type Action =
+  | FetchRequestAction
+  | FetchSuccessAction
+  | FetchErrorAction
+  | SetQueryAction
+  | SetPageAction
+  | SetSelectedImageAction;
+
 const initialState: State = {
   images: [],
   query: "",
@@ -39,7 +75,7 @@ const initialState: State = {
   selectedImage: null,
 };
 
-const reducer = (state: State, action: any) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "FETCH_REQUEST":
       return { ...state, loading: true, error: null };
@@ -63,6 +99,10 @@ const reducer = (state: State, action: any) => {
   }
 };
 
+interface UnsplashResponse {
+  results: Image[];
+}
+
 export default function App() {
   Modal.setAppElement("#root");
 
@@ -75,7 +115,7 @@ export default function App() {
     const fetchImages = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const response = await axios.get(`${BASE_URL}`, {
+        const response = await axios.get<UnsplashResponse>(BASE_URL, {
           params: {
             query,
             page,
